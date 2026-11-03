@@ -93,3 +93,80 @@ Para entregar, agrega al final de este `README.md` una sección con tu nombre y 
 3. ¿Los clientes VIP compran más que los Regulares?
 4. ¿Qué método de pago es el más usado?
 5. ¿Cuáles son los cinco clientes con más compras?
+
+## Respuestas del desafío
+
+Nombre: Santiago Arenas Tobon
+
+### 1. ¿Qué categoría genera más ingresos?
+
+La categoría Tecnologia genera más ingresos, con un total de 14.290.000.
+
+Criterio: agrupé las ventas por categoría, sumé la columna total y ordené los resultados de mayor a menor.
+
+Resultado del programa:
+
+```text
+Ingresos por categoría:
+categoria
+Tecnologia    14290000
+Hogar          3653000
+Papeleria       749000
+Accesorios      484000
+Name: total, dtype: int64
+
+Categoría con más ingresos: Tecnologia
+```
+
+### 2. ¿Qué canal vende más?
+
+Online vende más: registra 35 ventas y genera 14.669.000 en ingresos. Tienda registra 33 ventas y genera 4.507.000.
+
+Criterio: agrupé por canal, conté las ventas usando id_venta y sumé la columna total. Online supera a Tienda tanto en número de ventas como en ingresos.
+Resultado del programa:
+
+```text
+Ventas e ingresos por canal:
+        ventas  ingresos
+canal
+Online      35  14669000
+Tienda      33   4507000
+```
+
+### 3. ¿Los clientes VIP compran más que los Regulares?
+
+Sí, en promedio por cliente. Los VIP realizan aproximadamente 1,21 compras y gastan 336.083,33 por cliente. Los Regulares realizan 1,08 compras y gastan 308.611,11 por cliente.
+
+Criterio: agrupé por segmento, conté los clientes únicos y calculé las compras y el gasto total. Después dividí las compras y el gasto entre el número de clientes de cada segmento. Comparé promedios porque hay 24 clientes VIP y 36 Regulares.
+
+### 4. ¿Qué método de pago es el más usado?
+
+El método más usado es Efectivo, con 30 ventas. Le siguen Tarjeta con 25 y Transferencia con 13.
+
+Criterio: usé value_counts() en la columna metodo_pago para contar cuántas ventas corresponden a cada método. Comparé la frecuencia de uso, no el dinero pagado.
+
+### 5. ¿Cuáles son los cinco clientes con más compras?
+
+Los cinco primeros clientes son:
+
+| Cliente | Compras | Gasto total |
+|---|---:|---:|
+| Nicolas Cardona | 2 | 2.515.000 |
+| Matias Rodriguez | 2 | 1.278.000 |
+| Mia Quintero | 2 | 1.090.000 |
+| Luna Montoya | 2 | 1.007.000 |
+| Luis Perez | 2 | 730.000 |
+
+Criterio: agrupé por id_cliente y nombre_cliente, conté las compras y sumé el gasto total. Ordené primero por cantidad de compras y, en caso de empate, por gasto total de mayor a menor. Finalmente seleccioné los cinco primeros.
+
+## Explicación de la exploración
+
+La expresión ventas.iloc[2, 6] devuelve el total de la venta V003 porque iloc cuenta las posiciones desde cero. La fila 2 es la tercera fila, correspondiente a V003. La columna 6 es total, ya que id_venta pasó a ser el índice y dejó de contarse como columna. El resultado es 520000.
+
+## Explicación de la limpieza
+
+Encontré un valor faltante en la columna producto de ventas. Lo reemplacé por "Sin especificar" usando fillna(), en lugar de eliminar la fila con dropna(), para conservar la venta y sus ingresos. También convertí fecha_venta de texto a fecha, quité espacios al inicio y al final de los textos y apliqué formato título a ciudad. No encontré filas completamente duplicadas; apliqué drop_duplicates() y reinicié los índices como pide el taller. Se conservaron los 60 clientes y las 68 ventas.
+
+## Explicación del merge
+
+La tabla unida tiene 68 filas y 14 columnas. Conserva las 68 ventas porque usé how="left" y cada venta tiene un único cliente asociado. Las 14 columnas resultan de sumar las 10 columnas de ventas y las 5 de clientes, restando una porque id_cliente es la columna común y aparece una sola vez: 10 + 5 - 1 = 14. La validación informó 0 ventas sin cliente asociado.

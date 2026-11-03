@@ -9,6 +9,7 @@ ventas = ventas.set_index("id_venta")
 
 print("Primeras filas con índice id_venta:")
 print(ventas.head())
+print(ventas.tail())
 
 # .loc busca por ETIQUETA (el ID de venta)
 print("\n.loc['V003', 'total']:")
@@ -33,3 +34,13 @@ print("\nFilas de abril:", len(abril), "| filas de mayo:", len(mayo))
 
 total = pd.concat([abril, mayo])
 print("Filas tras concat:", len(total), "| filas originales:", len(ventas))
+
+# Consulta propia: producto y total de la venta V001
+print("\nProducto y total de V001:")
+print(ventas.loc["V001", ["producto", "total"]])
+
+# Unir las primeras dos ventas y las últimas dos
+seleccion = pd.concat([ventas.head(2), ventas.tail(2)])
+
+print("\nPrimeras dos y últimas dos ventas:")
+print(seleccion)

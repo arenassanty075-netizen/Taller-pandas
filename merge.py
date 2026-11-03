@@ -13,7 +13,23 @@ def validar_premerge(clientes, ventas):
     - Cuántas ventas no tienen cliente asociado (esto solo se informa, no falla).
     """
     # TODO 6: escribir las validaciones y devolver True o False.
+    if "id_cliente" not in clientes.columns:
+        print("Error: falta id_cliente en clientes.")
+        return False
+
+    if "id_cliente" not in ventas.columns:
+        print("Error: falta id_cliente en ventas.")
+        return False
+    if clientes["id_cliente"].duplicated().any():
+        print("Error: hay id_cliente repetidos en clientes.")
+        return False
+    if clientes["id_cliente"].dtype != ventas["id_cliente"].dtype:
+        print("Error: id_cliente tiene tipos distintos en clientes y ventas.")
+        return False
+    sin_cliente = ~ventas["id_cliente"].isin(clientes["id_cliente"])
+    print("Ventas sin cliente asociado:", sin_cliente.sum())
     return True
+
 
 
 def unir(clientes, ventas):
@@ -26,4 +42,15 @@ def unir(clientes, ventas):
     - Guardar con df.to_csv(...) en PROCESSED / "merge.csv".
     """
     # TODO 7: validar con validar_premerge(), hacer el merge, guardar el CSV y devolver el dataframe.
-    return None
+    if not validar_premerge(clientes, ventas):
+        return None
+    df = ventas.merge(
+        clientes,
+        on="id_cliente",
+        how="left",
+        validate="m:1"
+    )
+    PROCESSED.mkdir(parents=True, exist_ok=True)
+    df.to_csv(PROCESSED / "merge.csv", index=False)
+    print("Resultado del merge (filas, columnas):", df.shape)
+    return df
